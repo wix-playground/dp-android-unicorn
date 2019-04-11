@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Unicorn</string>
+    <string name="title_network">Network</string>
 </resources>

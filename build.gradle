@@ -16,6 +16,29 @@ buildscript {
     }
 }
 
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.findPlugin('android') ?: project.plugins.findPlugin('android-library')) {
+            android {
+                buildToolsVersion "28.0.3"
+                compileSdkVersion 28
+
+                defaultConfig {
+                    minSdkVersion 21
+                    targetSdkVersion 28
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+            }
+        }
+    }
+}
+
 allprojects {
     repositories {
         google()
