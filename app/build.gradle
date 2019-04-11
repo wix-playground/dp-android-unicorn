@@ -16,6 +16,16 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "BASE_URL", 'https://apps.wix.com'
+        }
+        release {
+            buildConfigField "String", "BASE_URL", 'https://apps.wix.com'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
