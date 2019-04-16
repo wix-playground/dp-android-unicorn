@@ -21,10 +21,15 @@ subprojects {
     afterEvaluate { project ->
         if (project.plugins.findPlugin('android') ?: project.plugins.findPlugin('android-library')) {
             android {
-                buildToolsVersion "28.0.3"
+
                 compileSdkVersion 28
 
                 defaultConfig {
+
+                    versionCode 1
+                    versionName "1.0"
+                    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
                     minSdkVersion 21
                     targetSdkVersion 28
                     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
