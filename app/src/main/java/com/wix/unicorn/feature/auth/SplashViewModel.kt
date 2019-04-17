@@ -1,4 +1,4 @@
-package com.wix.unicorn
+package com.wix.unicorn.feature.auth
 
 import androidx.lifecycle.ViewModel
 

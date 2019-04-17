@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-internal interface Api {
+interface Api {
     companion object {
         private const val PARAM_MOVIE_ID = "movieId"
         private const val MOVIES = "movies.json"

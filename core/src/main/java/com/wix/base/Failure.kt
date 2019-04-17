@@ -1,4 +1,6 @@
-package com.wix.unicorn.base.data
+package com.wix.base
+
+import com.wix.base.Failure.FeatureFailure
 
 /**
  * Base Class for handling errors/failures/exceptions.

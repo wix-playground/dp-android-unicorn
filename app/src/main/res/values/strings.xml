@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Unicorn</string>
-    <string name="title_network">Network</string>
-    <string name="title_activity_splash">SplashActivity</string>
+    <string name="network_error">No internet connection</string>
 </resources>
