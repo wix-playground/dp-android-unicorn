@@ -12,11 +12,9 @@ class FetchMoviesUseCase(private val service: Api) : BaseUseCase<List<Movie>, Ba
         val response = service.movies().execute()
         return when {
 
-            response.isSuccessful ->
-                Either.Success(response.body() ?: emptyList())
+            response.isSuccessful -> Either.Success(response.body() ?: emptyList())
 
-            else ->
-                Either.Error(Failure.NetworkConnection)
+            else -> Either.Error(Failure.NetworkConnection)
 
         }
     }
