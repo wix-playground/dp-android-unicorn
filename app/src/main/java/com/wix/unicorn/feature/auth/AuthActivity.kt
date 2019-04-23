@@ -70,7 +70,6 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
                 AuthViewModel.Action.GOOGLE_SIGN_OUT -> signOut()
             }
         })
-
     }
 
 
