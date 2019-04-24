@@ -16,7 +16,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             android:text="Google"
-            android:minWidth="100dp"
+            android:minWidth="120dp"
             android:layout_marginTop="@dimen/margin_24"
             app:layout_constraintTop_toBottomOf="@+id/a_auth_profile_pic"/>
 
@@ -28,14 +28,15 @@
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
-            android:minWidth="100dp"
+            android:minWidth="120dp"
             android:text="Facebook"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/a_auth_google_btn"/>
 
+
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             app:srcCompat="@drawable/ic_launcher_foreground"
             android:id="@+id/a_auth_profile_pic"
             android:layout_marginTop="8dp"
@@ -70,7 +71,7 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_begin="160dp"
+            app:layout_constraintGuide_begin="163dp"
             android:id="@+id/guideline4"/>
 
     <androidx.constraintlayout.widget.Guideline
@@ -93,4 +94,25 @@
             android:layout_height="wrap_content"
             app:layout_constraintGuide_begin="640dp"
             android:id="@+id/guideline7"/>
+
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            app:layout_constraintStart_toStartOf="@+id/a_auth_profile_pic"
+            app:layout_constraintEnd_toEndOf="@+id/a_auth_profile_pic"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/a_auth_profile_pic"/>
+
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@drawable/ic_google"
+            android:id="@+id/imageView"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintStart_toEndOf="@+id/a_auth_profile_pic"
+            android:layout_marginStart="8dp"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>

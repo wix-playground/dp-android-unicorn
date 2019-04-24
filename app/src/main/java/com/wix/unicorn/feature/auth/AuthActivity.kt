@@ -16,7 +16,6 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.tasks.OnCompleteListener
 import com.wix.unicorn.R
 import com.wix.unicorn.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -111,15 +110,11 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
 
     private fun signOutGoogle() {
         googleSignInClient.signOut()
-            .addOnCompleteListener(this, OnCompleteListener<Void> {
-                viewModel.googleAccount = null
-            })
+            .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 
     private fun revokeAccess() {
         googleSignInClient.revokeAccess()
-            .addOnCompleteListener(this, OnCompleteListener<Void> {
-                viewModel.googleAccount = null
-            })
+            .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 }
