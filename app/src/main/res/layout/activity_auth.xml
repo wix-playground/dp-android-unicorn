@@ -16,6 +16,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             android:text="Google"
+            android:minWidth="100dp"
             android:layout_marginTop="@dimen/margin_24"
             app:layout_constraintTop_toBottomOf="@+id/a_auth_profile_pic"/>
 
@@ -27,6 +28,7 @@
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
+            android:minWidth="100dp"
             android:text="Facebook"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/a_auth_google_btn"/>

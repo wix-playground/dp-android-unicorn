@@ -4,9 +4,15 @@ package com.wix.unicorn.feature.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.lifecycle.Observer
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,8 +36,10 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
         .build()
 
     private val googleSignInClient: GoogleSignInClient by lazy { GoogleSignIn.getClient(this, gso) }
+    private val callbackManager = CallbackManager.Factory.create()
 
-    private val authBtn: View get() = a_auth_google_btn
+    private val googleAuthBtn: View get() = a_auth_google_btn
+    private val fbAuthBtn: View get() = a_auth_fb_btn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +57,9 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        callbackManager.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
+            // The Task returned from this call is always completed, no need to attach a listener.
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             viewModel.handleSignInResult(task)
         }
@@ -60,32 +67,55 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
 
     private fun initViews() {
 
-        authBtn.setOnClickListener {
+        googleAuthBtn.setOnClickListener {
             viewModel.googleSignInClick()
         }
-
+        fbAuthBtn.setOnClickListener {
+            viewModel.facebookSignInClick()
+        }
         viewModel.actions.observe(this, Observer { action ->
             when (action) {
-                AuthViewModel.Action.GOOGLE_SIGN_IN -> signIn()
-                AuthViewModel.Action.GOOGLE_SIGN_OUT -> signOut()
+                AuthViewModel.Action.GOOGLE_SIGN_IN -> signInGoogle()
+                AuthViewModel.Action.GOOGLE_SIGN_OUT -> signOutGoogle()
+                AuthViewModel.Action.FACEBOOK_SIGN_IN -> signInFacebook()
+                AuthViewModel.Action.FACEBOOK_SIGN_OUT -> signOutFacebook()
             }
         })
     }
 
+    private fun signInFacebook() {
+        val fbLoginManager = LoginManager.getInstance()
+        fbLoginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                Log.w(AuthActivity::class.java.simpleName, "Success login")
+            }
 
-    private fun signIn() {
+            override fun onCancel() {
+                Log.w(AuthActivity::class.java.simpleName, "Cancel login")
+            }
+
+            override fun onError(e: FacebookException) {
+                Log.w(AuthActivity::class.java.simpleName, "Error login: $e")
+            }
+        })
+        fbLoginManager.logInWithReadPermissions(this, listOf("public_profile"))
+    }
+
+    private fun signOutFacebook() {
+
+    }
+
+    private fun signInGoogle() {
         startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
     }
 
-    private fun signOut() {
+    private fun signOutGoogle() {
         googleSignInClient.signOut()
             .addOnCompleteListener(this, OnCompleteListener<Void> {
                 viewModel.googleAccount = null
             })
     }
-    // [END signOut]
 
-    // [START revokeAccess]
     private fun revokeAccess() {
         googleSignInClient.revokeAccess()
             .addOnCompleteListener(this, OnCompleteListener<Void> {

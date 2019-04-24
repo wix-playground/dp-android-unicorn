@@ -16,7 +16,8 @@ class AuthViewModel : BaseViewModel() {
     val actions: LiveData<Action> get() = _actions
 
     enum class Action {
-        GOOGLE_SIGN_IN, GOOGLE_SIGN_OUT
+        GOOGLE_SIGN_IN, GOOGLE_SIGN_OUT,
+        FACEBOOK_SIGN_IN, FACEBOOK_SIGN_OUT
     }
 
     fun googleSignInClick() {
@@ -34,6 +35,10 @@ class AuthViewModel : BaseViewModel() {
             Log.w(this.toString(), "signInResult:failed code=$e")
         }
 
+    }
+
+    fun facebookSignInClick() {
+        _actions.value = Action.FACEBOOK_SIGN_IN
     }
 
 }
