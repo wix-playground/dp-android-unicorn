@@ -1,1 +1,7 @@
-include ':app', ':core'
+include ':app', ':network', ':database', ':presentation', ':common', ':movie', ':core'
+project(':network').projectDir = new File(rootDir, 'base/network')
+project(':database').projectDir = new File(rootDir, 'base/database')
+project(':presentation').projectDir = new File(rootDir, 'base/presentation')
+project(':common').projectDir = new File(rootDir, 'base/common')
+project(':core').projectDir = new File(rootDir, 'base/core')
+project(':movie').projectDir = new File(rootDir, 'features/movie')
