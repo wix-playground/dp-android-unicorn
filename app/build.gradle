@@ -24,14 +24,15 @@ android {
     }
 
     dependencies {
-        //TODO: move presentation to core
-        //TODO: clean dependencies
 
         implementation project(":core")
         implementation project(":common")
         implementation project(":movie")
+        implementation project(":splash")
 
         implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+        //TODO: clean dependencies
 
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
         implementation "androidx.appcompat:appcompat:$androidx"
