@@ -28,7 +28,6 @@ android {
         //TODO: clean dependencies
 
         implementation project(":core")
-        implementation project(":presentation")
         implementation project(":common")
         implementation project(":movie")
 
