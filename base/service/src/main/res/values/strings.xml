@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Database</string>
+    <string name="network_error">No internet connection</string>
+</resources>

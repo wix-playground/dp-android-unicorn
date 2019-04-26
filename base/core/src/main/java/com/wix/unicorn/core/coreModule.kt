@@ -1,9 +1,9 @@
 package com.wix.unicorn.core
 
-import com.wix.network.network
 import com.wix.unicorn.core.domain.repository.MoviesRepository
 import com.wix.unicorn.core.service.repository.MoviesRepositoryImpl
 import com.wix.unicorn.database.databaseModule
+import com.wix.unicorn.nertwork.network
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

@@ -27,8 +27,6 @@ android {
 
         implementation project(":core")
         implementation project(":common")
-        implementation project(":movie")
-        implementation project(":splash")
 
         implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -62,6 +60,11 @@ android {
         implementation "org.koin:koin-android:$koin_version"
         implementation "org.koin:koin-android-scope:$koin_version"
         implementation "org.koin:koin-android-viewmodel:$koin_version"
+
+        implementation "com.github.bumptech.glide:glide:$glide_version"
+        kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+
         testImplementation "org.koin:koin-test:$koin_version"
 
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$corutines"

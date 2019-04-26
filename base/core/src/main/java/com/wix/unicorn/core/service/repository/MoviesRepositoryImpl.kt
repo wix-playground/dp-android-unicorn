@@ -1,9 +1,9 @@
 package com.wix.unicorn.core.service.repository
 
-import com.wix.network.MoviesRemoteDataSource
 import com.wix.unicorn.core.domain.model.Movie
 import com.wix.unicorn.core.domain.repository.MoviesRepository
 import com.wix.unicorn.database.LocalDataSource
+import com.wix.unicorn.nertwork.MoviesRemoteDataSource
 import com.wix.unicorn.optionals.Either
 import com.wix.unicorn.optionals.Failure
 
