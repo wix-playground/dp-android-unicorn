@@ -9,18 +9,43 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.wix.unicorn.base.BaseViewModel
 import com.wix.unicorn.core.domain.model.UserProfile
+import com.wix.unicorn.optionals.Failure
 import kotlinx.coroutines.launch
 
-class AuthViewModel(val loginUseCase: WixLoginUseCase) : BaseViewModel() {
+class AuthViewModel(
+    val getUserProfileUseCase: GetProfileUseCase,
+    val loginUseCase: WixLoginUseCase
+) : BaseViewModel() {
 
     private val _actions: MutableLiveData<Action> = MutableLiveData()
-    var googleAccount: GoogleSignInAccount? = null
-
     val actions: LiveData<Action> get() = _actions
 
+    private val _userProfile: MutableLiveData<UserProfile> = MutableLiveData()
+    val userProfile: LiveData<UserProfile> get() = _userProfile
+
+    private val _showLoader: MutableLiveData<Boolean> = MutableLiveData()
+    val showLoader: LiveData<Boolean> get() = _showLoader
+
+    var googleAccount: GoogleSignInAccount? = null
+
+
     enum class Action {
-        GOOGLE_SIGN_IN, GOOGLE_SIGN_OUT,
-        FACEBOOK_SIGN_IN, FACEBOOK_SIGN_OUT
+        GOOGLE_SIGN_IN,
+        GOOGLE_SIGN_OUT,
+        FACEBOOK_SIGN_IN,
+        FACEBOOK_SIGN_OUT
+    }
+
+    fun onStart() {
+        viewModelScope.launch {
+            getUserProfileUseCase(Unit) {
+                it.either(::handleFailure) { profile ->
+                    _showLoader.value = false
+                    _userProfile.value = profile
+                    it
+                }
+            }
+        }
     }
 
     fun googleSignInClick() {
@@ -44,19 +69,23 @@ class AuthViewModel(val loginUseCase: WixLoginUseCase) : BaseViewModel() {
         _actions.value = Action.FACEBOOK_SIGN_IN
     }
 
-    fun login(email: String, password: String) {
-        viewModelScope.launch {
-            loginUseCase(WixLoginUseCase.Params(email, password)) {
-                it.either(
-                        ::handleFailure,
-                        ::handleLogin
-                )
+    override fun handleFailure(failure: Failure) {
+        when (failure) {
+            is Failure.UserNotAutorized -> {
+                _userProfile.value = UserProfile.empty()
+                _showLoader.value = false
             }
+            else -> super.handleFailure(failure)
         }
     }
 
-    fun handleLogin(profile: UserProfile) {
-        Log.d("AuthViewModel", profile.toString())
-    }
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            loginUseCase(WixLoginUseCase.Params(email, password)) { either ->
+                either.either(::handleFailure) {
 
+                }
+            }
+        }
+    }
 }

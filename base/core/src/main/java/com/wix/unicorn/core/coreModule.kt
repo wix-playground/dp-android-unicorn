@@ -16,5 +16,5 @@ val coreModule = module {
 
 private fun Module.repository() {
     single<MoviesRepository> { MoviesRepositoryImpl(localDataSource = get(), remoteDataSource = get()) }
-    single { LoginRepository(get()) }
+    single { LoginRepository(get(), get()) }
 }

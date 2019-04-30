@@ -6,4 +6,5 @@ import org.koin.core.module.Module
 fun Module.databaseModule() {
     single<DataBaseProvider<Realm>> { RealmProviderImpl(get()) }
     single<LocalDataSource> { LocalDataSourceImpl(get()) }
+    single { UserProfileStorage(get(), get()) }
 }

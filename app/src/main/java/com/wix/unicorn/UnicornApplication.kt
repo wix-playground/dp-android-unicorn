@@ -15,12 +15,14 @@ class UnicornApplication : Application() {
         startKoin {
             androidContext(this@UnicornApplication)
             modules(
-                    presentationModule,
-                    coreModule,
-                    splashModule,
-                    movieModule,
-                    authModule
+                presentationModule,
+                coreModule,
+                splashModule,
+                movieModule,
+                authModule
             )
         }
     }
+
+
 }

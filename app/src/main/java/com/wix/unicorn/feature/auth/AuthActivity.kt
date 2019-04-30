@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -32,11 +33,13 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
     private val viewModel: AuthViewModel by inject()
 
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
+        .requestEmail()
+        .build()
 
     private val googleSignInClient: GoogleSignInClient by lazy { GoogleSignIn.getClient(this, gso) }
     private val callbackManager = CallbackManager.Factory.create()
+
+    private val userEmail: TextView get() = a_auth_user_email
 
     private val googleAuthBtn: View get() = a_auth_google_btn
     private val fbAuthBtn: View get() = a_auth_fb_btn
@@ -48,15 +51,16 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
         initViews()
+        viewModel.googleAccount = GoogleSignIn.getLastSignedInAccount(this)
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.googleAccount = GoogleSignIn.getLastSignedInAccount(this)
+        viewModel.onStart()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,6 +92,13 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
                 AuthViewModel.Action.FACEBOOK_SIGN_OUT -> signOutFacebook()
             }
         })
+        viewModel.userProfile.observe(this, Observer { profile ->
+            userEmail.text = profile.email
+        })
+
+        viewModel.showLoader.observe(this, Observer { show ->
+
+        })
     }
 
     private fun signInFacebook() {
@@ -118,11 +129,11 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
 
     private fun signOutGoogle() {
         googleSignInClient.signOut()
-                .addOnCompleteListener(this) { viewModel.googleAccount = null }
+            .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 
     private fun revokeAccess() {
         googleSignInClient.revokeAccess()
-                .addOnCompleteListener(this) { viewModel.googleAccount = null }
+            .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 }

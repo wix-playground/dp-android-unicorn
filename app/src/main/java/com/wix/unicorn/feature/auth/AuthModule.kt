@@ -5,5 +5,6 @@ import org.koin.dsl.module
 
 val authModule = module {
     single { WixLoginUseCase(get()) }
-    viewModel { AuthViewModel(get()) }
+    single { GetProfileUseCase(get()) }
+    viewModel { AuthViewModel(get(), get()) }
 }
