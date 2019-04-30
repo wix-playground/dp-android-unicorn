@@ -1,15 +1,14 @@
 package com.wix.unicorn.nertwork
 
-import com.wix.unicorn.nertwork.dto.result.LoginResult
 import com.wix.unicorn.optionals.Either
 import com.wix.unicorn.optionals.Failure
 
-class LoginRequest(private val api: AuthApi) {
-    fun login(email: String, password: String): Either<Failure, LoginResult> {
-        val result = api.login(email, password).execute()
+class LogoutRequest(private val api: AuthApi) {
+    fun logout(): Either<Failure, Unit> {
+        val result = api.logout().execute()
         val resultBody = result.body()
         return if (result.isSuccessful && resultBody != null && resultBody.success) {
-            Either.Success(resultBody.payload)
+            Either.Success(Unit)
         } else {
             Either.Error(Failure.NetworkConnection)
         }

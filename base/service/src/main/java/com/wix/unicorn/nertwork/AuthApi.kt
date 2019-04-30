@@ -5,11 +5,15 @@ import com.wix.unicorn.nertwork.dto.result.LoginResult
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface LoginApi {
+interface AuthApi {
 
     @FormUrlEncoded
     @POST("oneapp/auth/sign-in")
     fun login(@Field("email") email: String, @Field("password") password: String): Call<BaseResponse<LoginResult>>
+
+    @GET("m/signout")
+    fun logout(): Call<BaseResponse<Unit>>
 }

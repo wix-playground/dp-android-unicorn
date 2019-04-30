@@ -2,23 +2,27 @@ package com.wix.unicorn.nertwork
 
 
 import android.content.Context
-import android.util.Base64
 import com.google.gson.Gson
 import com.wix.unicorn.database.BuildConfig
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.module.Module
 import org.koin.core.qualifier.StringQualifier
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 
 object Network {
 
     val WIX_LOGIN = StringQualifier("wix-login")
+    private val XSRF_TOKEN = "XSRF-TOKEN"
+    private val X_XSRF_TOKEN_KEY = "X-XSRF-TOKEN"
 
     fun Module.network() {
         single { provideGson() }
+        single { provideCookieJar() }
         single { provideDefaultOkhttpClient() }
         single { provideRetrofit(BuildConfig.BASE_URL, get(), get()) }
         single(WIX_LOGIN) { provideRetrofit(BuildConfig.LOGIN_BASE_URL, get(), get()) }
@@ -26,19 +30,48 @@ object Network {
         single { provideMoviesApi(get()) }
         single { provideLoginApi(get(WIX_LOGIN)) }
         single { LoginRequest(get()) }
+        single { LogoutRequest(get()) }
         single<MoviesRemoteDataSource> { MoviesRemoteDataSourceImpl(get()) }
     }
 
-    fun provideDefaultOkhttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
+    private fun provideCookieJar(): CookieJar {
+        return object : CookieJar {
 
-        val token = Base64.encodeToString("1556620945|OJ-J4VFxD4YZ".toByteArray(), Base64.NO_WRAP)
+            private val cookieStore = HashMap<String, MutableList<Cookie>>()
+
+            override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
+                cookieStore[url.host()] = cookies
+            }
+
+            override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
+                val cookies = cookieStore[url.host()]
+                return cookies ?: ArrayList()
+            }
+        }
+    }
+
+    fun provideDefaultOkhttpClient(): OkHttpClient {
+        val cookieManager = CookieManager()
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        val cookieJar = JavaNetCookieJar(cookieManager)
+        val builder = OkHttpClient.Builder()
+            .cookieJar(cookieJar)
+
 
         builder.addInterceptor { chain ->
-            val newRequest = chain.request()
-                .newBuilder()
-                .build()
-            chain.proceed(newRequest)
+            val request = chain.request()
+
+            val cookies: List<Cookie> = cookieJar.loadForRequest(request.url())
+            cookies
+                .find { it.name() == XSRF_TOKEN }
+                ?.let {
+                    chain.proceed(
+                        request.newBuilder()
+                            .header(X_XSRF_TOKEN_KEY, it.value())
+                            .build()
+                    )
+                }
+            chain.proceed(request)
         }
 
         if (BuildConfig.DEBUG) {
@@ -67,8 +100,8 @@ object Network {
         return retrofit.create(MoviesApi::class.java)
     }
 
-    fun provideLoginApi(retrofit: Retrofit): LoginApi {
-        return retrofit.create(LoginApi::class.java)
+    fun provideLoginApi(retrofit: Retrofit): AuthApi {
+        return retrofit.create(AuthApi::class.java)
     }
 
 }

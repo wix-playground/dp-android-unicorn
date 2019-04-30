@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     val getUserProfileUseCase: GetProfileUseCase,
-    val loginUseCase: WixLoginUseCase
+    val loginUseCase: WixLoginUseCase,
+    val logoutUserCase: LogoutUseCase
 ) : BaseViewModel() {
 
     private val _actions: MutableLiveData<Action> = MutableLiveData()
@@ -72,7 +73,6 @@ class AuthViewModel(
     override fun handleFailure(failure: Failure) {
         when (failure) {
             is Failure.UserNotAutorized -> {
-                _userProfile.value = UserProfile.empty()
                 _showLoader.value = false
             }
             else -> super.handleFailure(failure)
@@ -84,6 +84,17 @@ class AuthViewModel(
             loginUseCase(WixLoginUseCase.Params(email, password)) { either ->
                 either.either(::handleFailure) {
 
+                }
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            logoutUserCase(Unit) {
+                it.either(::handleFailure) {
+                    _userProfile.value = null
+                    it
                 }
             }
         }

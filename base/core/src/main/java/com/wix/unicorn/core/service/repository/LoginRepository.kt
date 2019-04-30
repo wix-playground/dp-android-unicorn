@@ -4,12 +4,14 @@ import android.util.Log
 import com.wix.unicorn.core.domain.model.UserProfile
 import com.wix.unicorn.database.UserProfileStorage
 import com.wix.unicorn.nertwork.LoginRequest
+import com.wix.unicorn.nertwork.LogoutRequest
 import com.wix.unicorn.nertwork.dto.result.LoginResult
 import com.wix.unicorn.optionals.Either
 import com.wix.unicorn.optionals.Failure
 
 class LoginRepository(
     private val loginRequest: LoginRequest,
+    private val logoutRequest: LogoutRequest,
     private val userLocalDataSource: UserProfileStorage
 ) {
 
@@ -40,5 +42,13 @@ class LoginRepository(
 
     fun getUserProfile(): UserProfile? = userLocalDataSource.profile?.let { UserProfile(it.email, it.guid) }
 
+
+    fun logout(): Either<Failure, Unit> {
+        val result = logoutRequest.logout()
+        if (result is Either.Success) {
+            userLocalDataSource.clear()
+        }
+        return result
+    }
 
 }

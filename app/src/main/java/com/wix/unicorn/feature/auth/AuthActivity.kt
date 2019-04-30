@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -47,13 +46,11 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
     private val editLogin: EditText get() = a_auth_edit_login
     private val editPassword: EditText get() = a_auth_edit_password
     private val loginBtn: View get() = a_auth_login_btn
+    private val logoutBtn: View get() = a_auth_logout_btn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+
         initViews()
         viewModel.googleAccount = GoogleSignIn.getLastSignedInAccount(this)
     }
@@ -83,6 +80,9 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
         }
         loginBtn.setOnClickListener {
             viewModel.login(editLogin.text.toString(), editPassword.text.toString())
+        }
+        logoutBtn.setOnClickListener {
+            viewModel.logout()
         }
         viewModel.actions.observe(this, Observer { action ->
             when (action) {

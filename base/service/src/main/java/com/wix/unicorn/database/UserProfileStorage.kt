@@ -10,21 +10,27 @@ class UserProfileStorage(
 ) {
 
     companion object {
-        private const val K_PROFILE = "profile"
+        private const val PROFILE = "profile"
     }
 
     var profile: UserProfile?
         get() =
             gson.fromJson<UserProfile>(
-                sharedPreferences.getString(K_PROFILE, ""),
+                sharedPreferences.getString(PROFILE, ""),
                 UserProfile::class.java
             )
         set(value) {
             sharedPreferences
                 .edit()
-                .putString(K_PROFILE, gson.toJson(value, UserProfile::class.java))
+                .putString(PROFILE, gson.toJson(value, UserProfile::class.java))
                 .apply()
         }
+
+
+    fun clear() {
+        profile = null
+        sharedPreferences.edit().remove(PROFILE).apply()
+    }
 
     data class UserProfile(
         val email: String,
@@ -32,5 +38,4 @@ class UserProfileStorage(
         val guid: String,
         val uaToken: String
     ) : Serializable
-
 }
