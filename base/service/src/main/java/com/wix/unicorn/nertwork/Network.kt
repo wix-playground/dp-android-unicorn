@@ -2,6 +2,7 @@ package com.wix.unicorn.nertwork
 
 
 import android.content.Context
+import android.util.Base64
 import com.wix.unicorn.database.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object Network {
+
     val WIX_LOGIN = StringQualifier("wix-login")
 
     fun Module.network() {
@@ -27,10 +29,21 @@ object Network {
 
     fun provideDefaultOkhttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
+
+        val token = Base64.encodeToString("1556620945|OJ-J4VFxD4YZ".toByteArray(), Base64.NO_WRAP)
+
+        builder.addInterceptor { chain ->
+            val newRequest = chain.request()
+                    .newBuilder()
+                    .build()
+            chain.proceed(newRequest)
+        }
+
         if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             builder.addInterceptor(loggingInterceptor)
         }
+
         return builder.build()
     }
 
