@@ -3,12 +3,15 @@ package com.wix.unicorn.feature.auth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.wix.unicorn.base.BaseViewModel
+import com.wix.unicorn.core.domain.model.UserProfile
+import kotlinx.coroutines.launch
 
-class AuthViewModel : BaseViewModel() {
+class AuthViewModel(val loginUseCase: WixLoginUseCase) : BaseViewModel() {
 
     private val _actions: MutableLiveData<Action> = MutableLiveData()
     var googleAccount: GoogleSignInAccount? = null
@@ -39,6 +42,21 @@ class AuthViewModel : BaseViewModel() {
 
     fun facebookSignInClick() {
         _actions.value = Action.FACEBOOK_SIGN_IN
+    }
+
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            loginUseCase(WixLoginUseCase.Params(email, password)) {
+                it.either(
+                        ::handleFailure,
+                        ::handleLogin
+                )
+            }
+        }
+    }
+
+    fun handleLogin(profile: UserProfile) {
+        Log.d("AuthViewModel", profile.toString())
     }
 
 }

@@ -2,6 +2,7 @@ package com.wix.unicorn
 
 import android.app.Application
 import com.wix.unicorn.core.coreModule
+import com.wix.unicorn.feature.auth.authModule
 import com.wix.unicorn.feature.movies.movieModule
 import com.wix.unicorn.feature.splash.splashModule
 import org.koin.android.ext.koin.androidContext
@@ -14,17 +15,12 @@ class UnicornApplication : Application() {
         startKoin {
             androidContext(this@UnicornApplication)
             modules(
-                presentationModule,
-                coreModule,
-                splashModule,
-                movieModule
+                    presentationModule,
+                    coreModule,
+                    splashModule,
+                    movieModule,
+                    authModule
             )
         }
     }
-
-    val appModule = module {
-        single { FetchMoviesUseCase(get(nameSpaceQualifier)) }
-        viewModel { MoviesViewModel(get(nameSpaceQualifier)) }
-    }
-
 }

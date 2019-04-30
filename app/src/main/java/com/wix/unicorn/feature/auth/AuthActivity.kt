@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import androidx.lifecycle.Observer
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -31,8 +32,8 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
     private val viewModel: AuthViewModel by inject()
 
     private val gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .build()
+            .requestEmail()
+            .build()
 
     private val googleSignInClient: GoogleSignInClient by lazy { GoogleSignIn.getClient(this, gso) }
     private val callbackManager = CallbackManager.Factory.create()
@@ -40,11 +41,15 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
     private val googleAuthBtn: View get() = a_auth_google_btn
     private val fbAuthBtn: View get() = a_auth_fb_btn
 
+    private val editLogin: EditText get() = a_auth_edit_login
+    private val editPassword: EditText get() = a_auth_edit_password
+    private val loginBtn: View get() = a_auth_login_btn
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
         initViews()
     }
@@ -71,6 +76,9 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
         }
         fbAuthBtn.setOnClickListener {
             viewModel.facebookSignInClick()
+        }
+        loginBtn.setOnClickListener {
+            viewModel.login(editLogin.text.toString(), editPassword.text.toString())
         }
         viewModel.actions.observe(this, Observer { action ->
             when (action) {
@@ -110,11 +118,11 @@ class AuthActivity(override val layoutId: Int = R.layout.activity_auth) : BaseAc
 
     private fun signOutGoogle() {
         googleSignInClient.signOut()
-            .addOnCompleteListener(this) { viewModel.googleAccount = null }
+                .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 
     private fun revokeAccess() {
         googleSignInClient.revokeAccess()
-            .addOnCompleteListener(this) { viewModel.googleAccount = null }
+                .addOnCompleteListener(this) { viewModel.googleAccount = null }
     }
 }

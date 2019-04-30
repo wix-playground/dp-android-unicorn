@@ -10,9 +10,11 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "BASE_URL", '"https://raw.githubusercontent.com/android10/Sample-Data/master/Android-CleanArchitecture-Kotlin/"'
+            buildConfigField "String", "LOGIN_BASE_URL", '"https://users.wix.com/"'
         }
         release {
             buildConfigField "String", "BASE_URL", '"https://raw.githubusercontent.com/android10/Sample-Data/master/Android-CleanArchitecture-Kotlin/"'
+            buildConfigField "String", "LOGIN_BASE_URL", '"https://users.wix.com/"'
         }
     }
 

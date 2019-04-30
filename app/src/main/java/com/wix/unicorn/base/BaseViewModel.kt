@@ -15,6 +15,7 @@
  */
 package com.wix.unicorn.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.wix.unicorn.optionals.Failure
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -25,10 +26,13 @@ import kotlinx.coroutines.CoroutineExceptionHandler
  * @see Failure
  */
 abstract class BaseViewModel : ViewModel() {
+    private val TAG = "BaseViewModel"
 
     val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
     }
 
-    protected open fun handleFailure(failure: Failure) {}
+    protected open fun handleFailure(failure: Failure) {
+        Log.e(TAG, failure.toString())
+    }
 }

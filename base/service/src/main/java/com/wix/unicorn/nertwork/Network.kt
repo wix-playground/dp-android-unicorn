@@ -5,27 +5,41 @@ import android.content.Context
 import com.wix.unicorn.database.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.module.Module
+import org.koin.core.qualifier.StringQualifier
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
 object Network {
+    val WIX_LOGIN = StringQualifier("wix-login")
+
+    fun Module.network() {
+        single { provideDefaultOkhttpClient() }
+        single { provideRetrofit(BuildConfig.BASE_URL, get()) }
+        single(WIX_LOGIN) { provideRetrofit(BuildConfig.LOGIN_BASE_URL, get()) }
+        single { provideNetworkHandler(get()) }
+        single { provideMoviesApi(get()) }
+        single { provideLoginApi(get(WIX_LOGIN)) }
+        single { LoginRequest(get()) }
+        single<MoviesRemoteDataSource> { MoviesRemoteDataSourceImpl(get()) }
+    }
 
     fun provideDefaultOkhttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+            val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             builder.addInterceptor(loggingInterceptor)
         }
         return builder.build()
     }
 
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
+    fun provideRetrofit(baseUrl: String, client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
     }
 
     fun provideNetworkHandler(context: Context): NetworkHandler {
@@ -36,6 +50,9 @@ object Network {
         return retrofit.create(MoviesApi::class.java)
     }
 
+    fun provideLoginApi(retrofit: Retrofit): LoginApi {
+        return retrofit.create(LoginApi::class.java)
+    }
 
 }
 
