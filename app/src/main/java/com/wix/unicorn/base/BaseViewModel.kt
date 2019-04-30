@@ -16,7 +16,7 @@
 package com.wix.unicorn.base
 
 import androidx.lifecycle.ViewModel
-import com.wix.base.Failure
+import com.wix.unicorn.optionals.Failure
 import kotlinx.coroutines.CoroutineExceptionHandler
 
 /**

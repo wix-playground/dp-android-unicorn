@@ -1,7 +1,7 @@
 package com.wix.unicorn.base
 
-import com.wix.base.Either
-import com.wix.base.Failure
+import com.wix.unicorn.optionals.Either
+import com.wix.unicorn.optionals.Failure
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
