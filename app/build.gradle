@@ -71,6 +71,7 @@ android {
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$corutines"
         implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
 
+        implementation 'ru.terrakok.cicerone:cicerone:5.0.0'
     }
 
 }
